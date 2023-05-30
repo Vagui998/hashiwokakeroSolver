@@ -3,6 +3,8 @@ package com.javeriana;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class App 
@@ -151,8 +153,24 @@ public class App
                     {
                         if (pTablero.jugadaValida(columnaOrigen, filaOrigen, columnaDestino, filaDestino)) 
                         {
-                            int[] jugada = {columnaOrigen, filaOrigen, columnaDestino, filaDestino};
-                            jugadasValidas.add(jugada);
+                            if (columnaOrigen == columnaDestino && filaOrigen > filaDestino) {
+                                int aux = filaOrigen;
+                                int nuevaFilaOrigen = filaDestino;
+                                int nuevaFilaDestino = aux;
+                                int[] jugada = {columnaOrigen, nuevaFilaOrigen, columnaDestino, nuevaFilaDestino};
+                                if (!jugadaRepetida(jugadasValidas, jugada)) {
+                                    jugadasValidas.add(jugada);
+                                }
+                            } else if (filaOrigen == filaDestino && columnaOrigen > columnaDestino) {
+                                int aux = columnaOrigen;
+                                int nuevaColumnaOrigen = columnaDestino;
+                                int nuevaColumnaDestino = aux;
+                                int[] jugada = {nuevaColumnaOrigen, filaOrigen, nuevaColumnaDestino, filaDestino};
+                                if (!jugadaRepetida(jugadasValidas, jugada)) {
+                                    jugadasValidas.add(jugada);
+                                }
+                            }
+                                                     
                         }
                     }
                 }
@@ -160,6 +178,18 @@ public class App
         }
 
         return jugadasValidas;
+    }
+
+    private static boolean jugadaRepetida(ArrayList<int[]> pJugadasValidas, int[] pJugada)
+    {
+        for(int[] comparada : pJugadasValidas)
+        {
+            if(Arrays.equals(comparada, pJugada))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void printJugadasValidas(ArrayList<int[]> pJugadas)
@@ -170,7 +200,6 @@ public class App
         }
     }
 
-
     public static void resolverTablero(TableroHashiwokakero tablero) {
         if (tablero.finDeJuego()) {
             System.out.println("¡Felicidades, has resuelto el tablero!");
@@ -178,9 +207,10 @@ public class App
         }
     
         ArrayList<int[]> jugadasValidas = obtenerJugadasValidas(tablero);
-        printJugadasValidas(jugadasValidas);
         boolean solucionEncontrada = false;
-        boolean jugadaOptimaEncontrada = false;
+    
+        // Sort the valid moves based on the heuristic evaluation function
+        Collections.sort(jugadasValidas, new HeuristicComparator(tablero));
     
         for (int[] jugada : jugadasValidas) {
             int columnaOrigen = jugada[0];
@@ -189,58 +219,32 @@ public class App
             int filaDestino = jugada[3];
     
             TableroHashiwokakero nuevoTablero = (TableroHashiwokakero) tablero.clone();
-            if (nuevoTablero.jugadaOptima(columnaOrigen, filaOrigen, columnaDestino, filaDestino)) {
-                nuevoTablero.agregarPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
-                nuevoTablero.printBoard();
-                jugadaOptimaEncontrada = true;
+            nuevoTablero.agregarPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
+            nuevoTablero.printBoard();
     
-                if (esTableroValido(nuevoTablero)) {
-                    resolverTablero(nuevoTablero);  // Llamada recursiva para continuar resolviendo el tablero
+            if (esTableroValido(nuevoTablero)) {
+                resolverTablero(nuevoTablero); // Recursive call to continue solving the board
+                
+                // Update jugadasValidas after the recursive call
+                jugadasValidas = obtenerJugadasValidas(nuevoTablero);
     
-                    if (nuevoTablero.finDeJuego()) {
-                        solucionEncontrada = true;
-                        return;  // Se encontró una solución, se detiene la recursión
-                    }
-    
-                    // Si la llamada recursiva no llevó a una solución, se deshace la jugada
-                    nuevoTablero.removerPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
+                if (nuevoTablero.finDeJuego()) {
+                    solucionEncontrada = true;
+                    return; // Solution found, stop the recursion
                 }
-            }
-        }
     
-        // If no optimal move was found, choose any valid move
-        if (!jugadaOptimaEncontrada) {
-            for (int[] jugada : jugadasValidas) {
-                int columnaOrigen = jugada[0];
-                int filaOrigen = jugada[1];
-                int columnaDestino = jugada[2];
-                int filaDestino = jugada[3];
-    
-                TableroHashiwokakero nuevoTablero = (TableroHashiwokakero) tablero.clone();
-                nuevoTablero.agregarPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
-                nuevoTablero.printBoard();
-    
-                if (esTableroValido(nuevoTablero)) {
-                    resolverTablero(nuevoTablero);  // Llamada recursiva para continuar resolviendo el tablero
-    
-                    if (nuevoTablero.finDeJuego()) {
-                        solucionEncontrada = true;
-                        return;  // Se encontró una solución, se detiene la recursión
-                    }
-    
-                    // Si la llamada recursiva no llevó a una solución, se deshace la jugada
-                    nuevoTablero.removerPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
-                }
+                // If the recursive call did not lead to a solution, undo the move
+                nuevoTablero.removerPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
             }
         }
     
         if (!solucionEncontrada) {
-            System.out.println("No se encontró una solución para el tablero");
+            //System.out.println("No se encontró una solución para el tablero");
         }
     }
     
     
-
+    
     public static boolean esTableroValido(TableroHashiwokakero pTablero)
     {
         return pTablero.esValido();

@@ -46,6 +46,7 @@ public class TableroHashiwokakero implements Cloneable
             }
         } 
         scanner.close();
+        actualizarVecinos();
     }
     
     public void printBoard() 
@@ -133,6 +134,7 @@ public class TableroHashiwokakero implements Cloneable
                                     agregarPuenteNodo(pFilaOrigen, pColumnaOrigen);
 
                                     agrego = true;
+                                    actualizarVecinos();
                                 }
                                 else
                                 {
@@ -184,6 +186,7 @@ public class TableroHashiwokakero implements Cloneable
                                     agregarPuenteNodo(pFilaDestino, pColumnaDestino);
                                     agregarPuenteNodo(pFilaOrigen, pColumnaOrigen);
                                     agrego = true;
+                                    actualizarVecinos();
                                 }
                                 else
                                 {
@@ -249,6 +252,7 @@ public class TableroHashiwokakero implements Cloneable
                                     removerPuenteNodo(pFilaDestino, pColumnaDestino);
                                     removerPuenteNodo(pFilaOrigen, pColumnaOrigen);
                                     removido = true;
+                                    actualizarVecinos();
                                 }
                                 else
                                 {
@@ -295,6 +299,7 @@ public class TableroHashiwokakero implements Cloneable
                                         removerPuenteNodo(pFilaDestino, pColumnaDestino);
                                         removerPuenteNodo(pFilaOrigen, pColumnaOrigen);
                                         removido = true;
+                                        actualizarVecinos();
                                     }
                                 }
                                 else
@@ -322,6 +327,21 @@ public class TableroHashiwokakero implements Cloneable
             existe = true;
         }
         return existe;
+    }
+
+    public Nodo getNodo(int pFila, int pColumna)
+    {
+        if(existeNodo(pFila, pColumna))
+        {
+            for(int i = 0; i < nodos.size(); i++)
+            {
+                if(nodos.get(i).getFila() == pFila && nodos.get(i).getColumna() == pColumna)
+                {
+                    return nodos.get(i);
+                }
+            }
+        }
+        return null;
     }
 
     public boolean agregarPuenteNodo(int pFila, int pColumna)
@@ -469,40 +489,78 @@ public class TableroHashiwokakero implements Cloneable
         return valido;
     }
 
-    public boolean jugadaOptima(int pColumnaOrigen, int pFilaOrigen, int pColumnaDestino, int pFilaDestino)
+    public void actualizarVecinos()
     {
-        Nodo origen = new Nodo(-1,-1,-1);
-        boolean encontroOrigen = false;
-        boolean encontroDestino = false;
-        Nodo destino = new Nodo(-1,-1,-1);
-        boolean optima = false;
-        for(int i = 0; i < nodos.size() && !encontroDestino && !encontroOrigen; i++)
+        for(int i = 0; i < nodos.size() ; i++)
         {
-            if(nodos.get(i).getFila() == pFilaDestino && nodos.get(i).getColumna() == pColumnaDestino)
+            int fila = nodos.get(i).getFila();
+            int columna = nodos.get(i).getColumna();
+            if((fila * 2 + 1) <  cantidadFilas*2)
             {
-                destino = nodos.get(i);
-                encontroDestino = true;
+                for(int j = (fila * 2) + 1 ; j < cantidadFilas*2 ; j++)
+                {
+                    if(tablero[j][columna*2]>0)
+                    {
+                        nodos.get(i).setCantidadVecinos(nodos.get(i).getCantidadVecinos()+1);
+                        break;
+                    }
+                    else if(tablero[j][columna*2]<-2)
+                    {
+                        break;
+                    }
+                }
             }
-            else if(nodos.get(i).getFila() == pFilaOrigen && nodos.get(i).getColumna() == pColumnaOrigen)
+           
+            if((fila * 2) - 1 >= 0)
             {
-                origen = nodos.get(i);
-                encontroOrigen = true;
+                for(int j = (fila * 2) - 1 ; j >= 0 ; j--)
+                {
+                    if(tablero[j][columna*2]>0)
+                    {
+                        nodos.get(i).setCantidadVecinos(nodos.get(i).getCantidadVecinos()+1);
+                        break;
+                    }
+                    else if(tablero[j][columna*2]<-2)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if((columna * 2 + 1) <  cantidadColumnas*2)
+            {
+                for(int j = (columna * 2) + 1 ; j < cantidadColumnas*2 ; j++)
+                {
+                    if(tablero[fila*2][j]>0)
+                    {
+                        nodos.get(i).setCantidadVecinos(nodos.get(i).getCantidadVecinos()+1);
+                        break;
+                    }
+                    else if(tablero[fila*2][j] < 0 && tablero[fila*2][j] > -3)
+                    {
+                        break;
+                    }
+                }
+            }
+           
+            if((columna * 2) - 1 >= 0)
+            {
+                for(int j = (columna * 2) - 1 ; j >= 0 ; j--)
+                {
+                    if(tablero[fila*2][j]>0)
+                    {
+                        nodos.get(i).setCantidadVecinos(nodos.get(i).getCantidadVecinos()+1);
+                        break;
+                    }
+                    else if(tablero[fila*2][j]< 0 && tablero[fila*2][j] > -3)
+                    {
+                        break;
+                    }
+                }
             }
         }
-        if(encontroDestino && encontroOrigen)
-        {
-            if(origen.getPuentesConectados()+1 == origen.getValorDeseado() && destino.getPuentesConectados() + 1 == destino.getValorDeseado())
-            {
-                optima = true;
-            }
-        }
-        else
-        {
-            return false;
-        }
-        return optima;
     }
-    
+ 
     @Override
     public TableroHashiwokakero clone() {
         try {
@@ -522,5 +580,47 @@ public class TableroHashiwokakero implements Cloneable
             throw new AssertionError(e); // This should not happen
         }
     }
+
+    public int getIslandImportance(int pColumna, int pFila) {
+        boolean encontro = false;
+        for (Nodo island : nodos) 
+        {
+            if(!encontro)
+            {
+                if (island.getColumna() == pColumna && island.getFila() == pFila) {
+                    int islandNumber = island.getValorDeseado();
+                    encontro = true;
+                    
+                    // Assign higher importance to islands with higher numbers
+                    // and fewer connections remaining
+                    if(islandNumber == 8)
+                    {
+                        return 40;
+                    }
+                    if((pColumna == 0 && pFila == 0 ) || (pColumna == 0 && pFila == cantidadFilas-1 ) || (pColumna == cantidadColumnas-1 && pFila == 0 ) || (pColumna == cantidadColumnas-1 && pFila == cantidadFilas-1 ) )
+                    {
+                        if(islandNumber == 4 || islandNumber == 3)
+                        return 40;
+                    }
+                    else if(pColumna == 0 || pFila == 0 || pColumna == cantidadColumnas-1 || pFila == cantidadFilas-1)
+                    {
+                        if(islandNumber == 5 || islandNumber == 6)
+                        return 40;
+                    }
+                    if(island.getNumeroConexionesRestantes() > 0 && island.getCantidadVecinos() == 1)
+                    {
+                        return 40;
+                    }
+                    int importance = islandNumber/2;
+                    
+                    return importance;
+                }
+            }
+
+        }
+        
+        return 0; // Island not found, return default importance
+    }
+    
   
 }
