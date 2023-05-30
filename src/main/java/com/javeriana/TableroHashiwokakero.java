@@ -122,7 +122,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             else if(tablero[i][pColumnaOrigen*2] > 0)
                             {
-                                if(tablero[i][pColumnaOrigen*2] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(i == pFilaDestino*2)
                                 {
                                     for(int j = pFilaOrigen*2+1 ; j < pFilaDestino*2 ; j++)
                                     {
@@ -168,7 +168,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             if(tablero[pFilaOrigen*2][j] > 0)
                             {
-                                if(tablero[pFilaOrigen*2][j] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(j == pColumnaDestino*2)
                                 {
                                     for(int k = pColumnaOrigen*2+1 ; k < pColumnaDestino*2 ; k++)
                                     {
@@ -240,7 +240,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             else if(tablero[i][pColumnaOrigen*2] > 0)
                             {
-                                if(tablero[i][pColumnaOrigen*2] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(i == pFilaDestino*2)
                                 {
                                     for(int j = pFilaOrigen*2+1 ; j < pFilaDestino*2 ; j++)
                                     {
@@ -280,7 +280,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             else if(tablero[pFilaOrigen*2][j] > 0)
                             {
-                                if(tablero[pFilaOrigen*2][j] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(j == pColumnaDestino*2)
                                 {
                                     for(int k = pColumnaOrigen*2+1 ; k < pColumnaDestino*2 ; k++)
                                     {
@@ -403,7 +403,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             else if(tablero[i][pColumnaOrigen*2] > 0)
                             {
-                                if(tablero[i][pColumnaOrigen*2] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(i == pFilaDestino*2)
                                 {
                                     agrego = true;
                                 }
@@ -439,7 +439,7 @@ public class TableroHashiwokakero implements Cloneable
                             }
                             if(tablero[pFilaOrigen*2][j] > 0)
                             {
-                                if(tablero[pFilaOrigen*2][j] == tablero[pFilaDestino*2][pColumnaDestino*2])
+                                if(j == pColumnaDestino*2)
                                 {
                                     agrego = true;
                                 }

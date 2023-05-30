@@ -178,6 +178,7 @@ public class App
         }
     
         ArrayList<int[]> jugadasValidas = obtenerJugadasValidas(tablero);
+        printJugadasValidas(jugadasValidas);
         boolean solucionEncontrada = false;
         boolean jugadaOptimaEncontrada = false;
     
