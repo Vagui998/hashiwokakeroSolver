@@ -579,6 +579,42 @@ public class TableroHashiwokakero implements Cloneable
         }
     }
 
+    public boolean predecirJugada(int pColumnaOrigen, int pFilaOrigen, int pColumnaDestino, int pFilaDestino)
+    {
+        boolean encontroOrigen = false;
+        boolean encontroDestino = false;
+        Nodo origen = null;
+        Nodo destino = null;
+        for(int i = 0; i < nodos.size() && !(encontroDestino && encontroOrigen); i++)
+        {
+            int fila = nodos.get(i).getFila();
+            int columna = nodos.get(i).getColumna();
+            if(fila == pFilaOrigen && columna == pColumnaOrigen)
+            {
+                encontroOrigen = true;
+                origen = nodos.get(i);
+            }
+            else if(fila == pFilaDestino && columna == pColumnaDestino)
+            {
+                encontroDestino = true;
+                destino = nodos.get(i);
+            }
+        }
+        if(encontroDestino && encontroOrigen)
+        {
+            if(origen.getNumeroConexionesRestantes() == 0 || destino.getNumeroConexionesRestantes() == 0)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+        
+        return true;
+    }
+
     public int getImportanciaNodo(int pColumna, int pFila) {
         boolean encontro = false;
         for (Nodo nodo : nodos) 

@@ -16,7 +16,7 @@ public class App
         
         try 
         {
-            tablero = new TableroHashiwokakero("tablero3.txt");
+            tablero = new TableroHashiwokakero("tablero.txt");
             System.out.println("\nTablero: ");
             tablero.printBoard();
             
@@ -161,7 +161,7 @@ public class App
                                 int nuevaFilaOrigen = filaDestino;
                                 int nuevaFilaDestino = aux;
                                 int[] jugada = {columnaOrigen, nuevaFilaOrigen, columnaDestino, nuevaFilaDestino};
-                                if (!jugadaRepetida(jugadasValidas, jugada)) {
+                                if (!jugadaRepetida(jugadasValidas, jugada) && pTablero.predecirJugada(columnaOrigen, filaOrigen, columnaDestino, filaDestino)) {
                                     jugadasValidas.add(jugada);
                                 }
                             } else if (filaOrigen == filaDestino && columnaOrigen > columnaDestino) {
@@ -169,7 +169,7 @@ public class App
                                 int nuevaColumnaOrigen = columnaDestino;
                                 int nuevaColumnaDestino = aux;
                                 int[] jugada = {nuevaColumnaOrigen, filaOrigen, nuevaColumnaDestino, filaDestino};
-                                if (!jugadaRepetida(jugadasValidas, jugada)) {
+                                if (!jugadaRepetida(jugadasValidas, jugada) && pTablero.predecirJugada(columnaOrigen, filaOrigen, columnaDestino, filaDestino)) {
                                     jugadasValidas.add(jugada);
                                 }
                             }
