@@ -209,8 +209,8 @@ public class App
         ArrayList<int[]> jugadasValidas = obtenerJugadasValidas(tablero);
         boolean solucionEncontrada = false;
     
-        // Sort the valid moves based on the heuristic evaluation function
-        Collections.sort(jugadasValidas, new HeuristicComparator(tablero));
+        // Ordenar jugadas validas en orden descendiente por Heuristica
+        Collections.sort(jugadasValidas, new ComparadorHeuristica(tablero));
     
         for (int[] jugada : jugadasValidas) {
             int columnaOrigen = jugada[0];
@@ -222,18 +222,18 @@ public class App
             nuevoTablero.agregarPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
             nuevoTablero.printBoard();
     
-            if (esTableroValido(nuevoTablero)) {
-                resolverTablero(nuevoTablero); // Recursive call to continue solving the board
+            if (nuevoTablero.esValido()) {
+                resolverTablero(nuevoTablero); // Llamada recursiva para continuar resolviendo el tablero
                 
-                // Update jugadasValidas after the recursive call
+                // Actualizar jugadasValidas despues de la llamada recursiva
                 jugadasValidas = obtenerJugadasValidas(nuevoTablero);
     
                 if (nuevoTablero.finDeJuego()) {
                     solucionEncontrada = true;
-                    return; // Solution found, stop the recursion
+                    return; // Solucion encontrada, finalizar recursion.
                 }
     
-                // If the recursive call did not lead to a solution, undo the move
+                // Regresion de la movida si no se encuentra una solucion
                 nuevoTablero.removerPuente(columnaOrigen, filaOrigen, columnaDestino, filaDestino);
             }
         }
@@ -241,13 +241,6 @@ public class App
         if (!solucionEncontrada) {
             //System.out.println("No se encontró una solución para el tablero");
         }
-    }
-    
-    
-    
-    public static boolean esTableroValido(TableroHashiwokakero pTablero)
-    {
-        return pTablero.esValido();
     }
 
 }

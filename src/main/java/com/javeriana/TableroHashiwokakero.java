@@ -565,53 +565,49 @@ public class TableroHashiwokakero implements Cloneable
     public TableroHashiwokakero clone() {
         try {
             TableroHashiwokakero cloned = (TableroHashiwokakero) super.clone();
-            // Deep copy the 2D array 'tablero'
             cloned.tablero = new int[cantidadFilas*2][cantidadColumnas*2];
             for (int i = 0; i < cantidadFilas*2; i++) {
                 System.arraycopy(tablero[i], 0, cloned.tablero[i], 0, cantidadColumnas*2);
             }
-            // Deep copy the ArrayList 'nodos'
             cloned.nodos = new ArrayList<>();
             for (Nodo nodo : nodos) {
                 cloned.nodos.add((Nodo)nodo.clone());
             }
             return cloned;
         } catch (CloneNotSupportedException e) {
-            throw new AssertionError(e); // This should not happen
+            throw new AssertionError(e); 
         }
     }
 
-    public int getIslandImportance(int pColumna, int pFila) {
+    public int getImportanciaNodo(int pColumna, int pFila) {
         boolean encontro = false;
-        for (Nodo island : nodos) 
+        for (Nodo nodo : nodos) 
         {
             if(!encontro)
             {
-                if (island.getColumna() == pColumna && island.getFila() == pFila) {
-                    int islandNumber = island.getValorDeseado();
+                if (nodo.getColumna() == pColumna && nodo.getFila() == pFila) {
+                    int valorDeseadoNodo = nodo.getValorDeseado();
                     encontro = true;
                     
-                    // Assign higher importance to islands with higher numbers
-                    // and fewer connections remaining
-                    if(islandNumber == 8)
+                    if(valorDeseadoNodo == 8)
                     {
                         return 40;
                     }
                     if((pColumna == 0 && pFila == 0 ) || (pColumna == 0 && pFila == cantidadFilas-1 ) || (pColumna == cantidadColumnas-1 && pFila == 0 ) || (pColumna == cantidadColumnas-1 && pFila == cantidadFilas-1 ) )
                     {
-                        if(islandNumber == 4 || islandNumber == 3)
+                        if(valorDeseadoNodo == 4 || valorDeseadoNodo == 3)
                         return 40;
                     }
                     else if(pColumna == 0 || pFila == 0 || pColumna == cantidadColumnas-1 || pFila == cantidadFilas-1)
                     {
-                        if(islandNumber == 5 || islandNumber == 6)
+                        if(valorDeseadoNodo == 5 || valorDeseadoNodo == 6)
                         return 40;
                     }
-                    if(island.getNumeroConexionesRestantes() > 0 && island.getCantidadVecinos() == 1)
+                    if(nodo.getNumeroConexionesRestantes() > 0 && nodo.getCantidadVecinos() == 1)
                     {
                         return 40;
                     }
-                    int importance = islandNumber/2;
+                    int importance = valorDeseadoNodo*3;
                     
                     return importance;
                 }
@@ -619,7 +615,7 @@ public class TableroHashiwokakero implements Cloneable
 
         }
         
-        return 0; // Island not found, return default importance
+        return 0;
     }
     
   

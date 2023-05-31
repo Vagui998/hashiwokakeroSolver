@@ -52,7 +52,8 @@ public class Nodo implements Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    protected Object clone() throws CloneNotSupportedException 
+    {
         Nodo cloned = (Nodo) super.clone();
         return cloned;
     }
