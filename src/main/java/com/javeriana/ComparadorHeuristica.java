@@ -63,11 +63,11 @@ public class ComparadorHeuristica implements Comparator<int[]> {
         }
         if(tablero.getNodo(filaOrigen, columnaOrigen).getNumeroConexionesRestantes() == 0)
         {
-            potencial -= 100;
+            potencial -= 1000;
         }
         if(tablero.getNodo(filaDestino, columnaDestino).getNumeroConexionesRestantes() == 0)
         {
-            potencial -= 100;
+            potencial -= 1000;
         }
         
         return potencial;

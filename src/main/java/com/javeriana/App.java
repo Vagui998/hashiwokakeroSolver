@@ -12,10 +12,11 @@ public class App
     public static void main(String[] args) 
     {
         TableroHashiwokakero tablero = null;
+        boolean finDeJuego = false;
         
         try 
         {
-            tablero = new TableroHashiwokakero("tablero.txt");
+            tablero = new TableroHashiwokakero("tablero3.txt");
             System.out.println("\nTablero: ");
             tablero.printBoard();
             
@@ -122,13 +123,15 @@ public class App
                     }
                     break;
                 case 6:
-                    resolverTablero(tablero);
-                    tablero.printBoard();
+                    if(resolverTablero(tablero))
+                    {
+                        finDeJuego = true;
+                    }
                     break;
                 default:
                     System.out.println("Seleccione una opcion valida!");
             }
-            if(tablero.finDeJuego())
+            if(tablero.finDeJuego() || finDeJuego)
             {
                 System.out.println("Felicidades Ganaste!");
                 break;
@@ -200,14 +203,13 @@ public class App
         }
     }
 
-    public static void resolverTablero(TableroHashiwokakero tablero) {
+    public static boolean resolverTablero(TableroHashiwokakero tablero) {
         if (tablero.finDeJuego()) {
             System.out.println("¡Felicidades, has resuelto el tablero!");
-            return;
+            return true;
         }
     
         ArrayList<int[]> jugadasValidas = obtenerJugadasValidas(tablero);
-        boolean solucionEncontrada = false;
     
         // Ordenar jugadas validas en orden descendiente por Heuristica
         Collections.sort(jugadasValidas, new ComparadorHeuristica(tablero));
@@ -223,14 +225,13 @@ public class App
             nuevoTablero.printBoard();
     
             if (nuevoTablero.esValido()) {
-                resolverTablero(nuevoTablero); // Llamada recursiva para continuar resolviendo el tablero
-                
+                boolean solucionEncontrada = resolverTablero(nuevoTablero); // Llamada recursiva para continuar resolviendo el tablero
+    
                 // Actualizar jugadasValidas despues de la llamada recursiva
                 jugadasValidas = obtenerJugadasValidas(nuevoTablero);
     
-                if (nuevoTablero.finDeJuego()) {
-                    solucionEncontrada = true;
-                    return; // Solucion encontrada, finalizar recursion.
+                if (solucionEncontrada) {
+                    return true; // Propagate the solution found status and stop the recursion.
                 }
     
                 // Regresion de la movida si no se encuentra una solucion
@@ -238,9 +239,8 @@ public class App
             }
         }
     
-        if (!solucionEncontrada) {
-            //System.out.println("No se encontró una solución para el tablero");
-        }
+        return false; // No solution found for the current tablero.
     }
+    
 
 }
